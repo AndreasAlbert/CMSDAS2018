@@ -1,6 +1,6 @@
 # Setup
-scram p CMSSW_9_3_6
-cd CMSSW_9_3_6;
+scram p CMSSW_9_3_9_patch1
+cd CMSSW_9_3_9_patch1;
 cmsenv;
 cd -;
 
@@ -19,7 +19,21 @@ cd ${CMSSW_BASE}/src;
 scram b;
 cd -;
 
-cmsDriver Configuration/GenProduction/python/Hadronizer_TuneCP5_13TeV_generic_LHE_pythia8_cff.py --mc --eventcontent RAWSIM,LHE --datatier GEN,LHE --conditions 93X_upgrade2023_realistic_v5 --beamspot HLLHC14TeV --step GEN --geometry Extended2023D17 --era Phase2_timing --filein file:unweighted_events.lhe --fileout file:GEN.root -n 1000
+cmsDriver CMSDAS/GEN/python/Hadronizer_TuneCP5_13TeV_generic_LHE_pythia8_cff.py \
+--mc \
+--eventcontent RAWSIM,LHE \
+--datatier GEN,LHE \
+--conditions 93X_upgrade2023_realistic_v5 \
+--beamspot HLLHC14TeV \
+--step GEN \
+--geometry Extended2023D17 \
+--era Phase2_timing \
+--filein file:unweighted_events.lhe \
+--fileout file:GEN.root \
+-n 1000
+
+# Use ParticleListDrawer to inspect output
+# How are the events different than in LHE?
 
 
 # Copy the config fragment for plotting
@@ -63,7 +77,18 @@ cd ${CMSSW_BASE}/src
 scram b;
 cd -
 
-cmsDriver Configuration/GenProduction/python/Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_qCut20_LHE_pythia8_cff.py .........
+
+cmsDriver.py CMSDAS/GEN/python/Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_qCut20_LHE_pythia8_cff.py \
+--mc \
+--eventcontent RAWSIM,LHE \
+--datatier GEN,LHE \
+--conditions 93X_mc2017_realistic_v3 \
+--beamspot Realistic25ns13TeVEarly2017Collision \
+--step LHE,GEN \
+--nThreads 1 \
+--geometry DB:Extended \
+--era Run2_2017 \
+--fileout file:GEN_MLM_qCut20.root \
 
 # Check the output of the GenXSecAnalyzer:
 #   What is the value matching efficiency? What does it mean?
