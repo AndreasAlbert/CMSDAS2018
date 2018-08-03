@@ -242,7 +242,7 @@ cmsRun config.py
 Without opening the output file, can you already discern some differences with respect to the LHE input file?
 
 
----++ Inspecting the output
+---+++ Inspecting the output
 Since the output files are now in EDM format, we cannot use a simple text editor to inspect the events. As a simple alternative, CMSSW contains the ParticleListDrawer module:
 
 <pre style="background-color: #f5f5dc;">
@@ -270,4 +270,76 @@ rootbrowse analyzed.root
 
 As in the LHE-level case, look at the distributions and try to make sense of them. What are the differences compared to before?
 
+
+
+---++ Jet multiplicity merging
+
+In the example case we have studied so far, parton radiation was modeled exclusively by P8. MG5 created a matrix element prediction for production of only a W boson on its own, and P8 then took care of adding radiated jets. Another approach is to generate the full matrix elements not only for the W final state, but also for W + 1 jet, W + 2 jet, ..., W + N jet final states. In this case, we will  rely on P8 only to model jet multiplicities > N (and of course model the hadronization of outgoing partons).
+
+---+++ Generating events
+We have prepared an MG5 gridpack for a W+jet process, which you can find at this location:
+
+<pre style="background-color: #f5f5dc;">
+PATH_TO_GRIDPACK="/afs/cern.ch/work/a/aalbert/public/2018-07-30_CMSDAS/wplustest_4f_012jet_LO_slc6_amd64_gcc481_CMSSW_7_1_30_tarball.tar.xz"
+</pre>
+
+To understand what is going on inside a gridpack, it is a good idea to unpack it and look at the InputCards directory, as well as the gridpack_generation.log file:
+
+<pre style="background-color: #f5f5dc;">
+mkdir unpack
+cd unpack
+tar xf ${PATH_TO_GRIDPACK}
+ls -l gridpack_generation.log InputCards
+</pre>
+
+Compare the input cards to the ones we used before. What is different, what stayed the same?
+What can you learn from the log file? How many subprocesses are produced? What is the cross section? How does all of this compare to the previous case?
+
+Let's generate some events. Again, we are going to use cmsDriver, but now with a different fragment. Compare the fragment to the earlier one to see what is different now. Before running it, make sure that it has the correct gridpack path in it.
+
+<pre style="background-color: #f5f5dc;">
+cp Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_qCut20_LHE_pythia8_cff.py ${CONFIG_PATH}
+cd ${CMSSW_BASE}/src
+scram b;
+cd -
+
+cmsDriver.py CMSDAS/GEN/python/Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_qCut20_LHE_pythia8_cff.py \
+--mc \
+--eventcontent RAWSIM,LHE \
+--datatier GEN-SIM,LHE \
+--conditions 93X_mc2017_realistic_v3 \
+--beamspot Realistic25ns13TeVEarly2017Collision \
+--step LHE,GEN \
+--nThreads 1 \
+--geometry DB:Extended \
+--era Run2_2017  \
+--fileout file:step0.root \
+-n 1000
+</pre>
+
+At the end of the run, CMSSW automatically runs the GenXSecAnalyzer, which is a simple tool to calculate the sample cross-section, check the distribution of weights and give other useful insights.
+In the case of jet matching, it also gives the matching efficiencies. What are the matching efficiencies for each subprocess? How does the cross-section after matching compare to the cross-section before matching?
+
+If you want to generate merged samples, it is important to check that the merging performs well. Since we have artificially split the physical process into energy regimes above and below QCUT, we need to make sure that the transition between the two regimes is smooth. Optimally, it should be impossible to tell from the merged sample what value of QCUT we used. To test this, we consider the distribution of the differential jet rates (DJRs). The DJRs correspond to the kt separation of the final clustering step for a given jet multiplicity. E.g. if we keep clustering an event until it has exaclty 2 jets left, and these 2 jets have a kt separation of 20 GeV, then DJR(1->2) = 20 GeV. It is called "1->2" because as we decrease the cutoff scale from >20 GeV to <20 GeV, the event turns from a 1-jet into a 2-jet event. 
+
+In the genproductions repository, there is a macro that plots these quantities for a given EDM file:
+
+<pre style="background-color: #f5f5dc;">
+root -l -b -q /path/to/genproductions/bin/MadGraph5_aMCatNLO/macros/plotdjr.C\(\"step0.root\",\"djr_qcut20.pdf\"\)
+</pre>
+
+Look at the resulting PDF file and check out the distributions. The contributions with different numbers of matrix element partons should sum up to give a smooth distribution.
+
+To save on computing time in this exercise, we have pre-generated samples with different values of QCUT. What do the DJR distributions look like for the different values of QCUT? Which one would you choose?
+
+
+
+
+
+
+
+
+
 -- Main.AndreasAlbert - 2018-08-02
+
+
