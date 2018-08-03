@@ -5,6 +5,7 @@ In the first part of the exercise, we will use the matrix element generator MadG
 ---++ Setting up CMSSW
 
 While MG5 can be used completely standalone, we will still set up a CMSSW area just to make sure that everyone has the same libraries loaded and can profit from pre-installed software such as LHAPDF.
+
 <pre style="background-color: #f5f5dc;"> 
 source /cvmfs/cms.cern.ch/cmsset_default.sh
 scram p CMSSW_7_1_30
@@ -27,18 +28,21 @@ git clone git@github.com:AndreasAlbert/genproductions.git -b CMSDAS2018_26x
 </pre>
 
 The cards we are interested in are located in this subfolder:
+
 <pre style="background-color: #f5f5dc;"> 
 ls genproductions/bin/MadGraph5_aMCatNLO/cards/examples/wplustest_4f_LO/
-</pre> <pre style="background-color: #f5f5dc;">wplustest_4f_LO_run_card.dat
-
+</pre>
+<pre style="background-color: #f5f5dc;">
+wplustest_4f_LO_run_card.dat
 wplustest_4f_LO_proc_card.dat
 </pre>
 
 The proc_card file defines process to be generate (hence the name proc). Look at the syntax:
-<pre style="background-color: #f5f5dc;">generate p p &gt; w+, w+ &gt; l+ vl
+<pre style="background-color: #f5f5dc;">
+generate p p &gt; w+, w+ &gt; l+ vl
 </pre>
 
-What does this statement mean? Refer to this MG tutorial for documentation on the syntax INSERTLINKHERE.
+What does this statement mean? Refer to [[https://cp3.irmp.ucl.ac.be/projects/madgraph/wiki/InputEx][the MG5 documentation]] on the syntax .
 What modifications of this statement can you think of? What could we replace the "w+ &gt; l+ vl" part with?
 
 ---+++ Setting up Madgraph
@@ -112,7 +116,6 @@ mkdir work
 cd work
 tar xf ../*.xz
 
-
 NEVENTS=10000
 RANDOMSEED=12345
 NCPU=1
@@ -150,7 +153,6 @@ import ../genproductions/bin/MadGraph5_aMCatNLO/work/cmsgrid_final.lhe as GRIDPA
 Now we can user simple syntax to define the distributions we would like to look at:
 
 <pre style="background-color: #f5f5dc;">
-
 # set STANDALONE.xsection = 1
 # set GRIDPACK.xsection = 1
 
@@ -179,7 +181,7 @@ firefox ANALYSIS_0/HTML/index.html
 
 What observations do you make? Are the two datasets consistent? What are the shapes of the lepton pT distributions? What is the shape of the pT distribution of the W system? Are these shapes physical?
 
-Feel free to experiment here and plot other quantities you find interesting. You can check a syntax reference here: INSERTLINKHERE.
+Feel free to experiment here and plot other quantities you find interesting. You can refer to the [[https://arxiv.org/pdf/1206.1599.pdf][user manual]] to learn about the syntax.
 
 ---+ Part 2: Generating particle-level events
 
@@ -331,13 +333,6 @@ root -l -b -q /path/to/genproductions/bin/MadGraph5_aMCatNLO/macros/plotdjr.C\(\
 Look at the resulting PDF file and check out the distributions. The contributions with different numbers of matrix element partons should sum up to give a smooth distribution.
 
 To save on computing time in this exercise, we have pre-generated samples with different values of QCUT. What do the DJR distributions look like for the different values of QCUT? Which one would you choose?
-
-
-
-
-
-
-
 
 
 -- Main.AndreasAlbert - 2018-08-02
