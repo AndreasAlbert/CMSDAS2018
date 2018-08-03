@@ -245,9 +245,11 @@ Without opening the output file, can you already discern some differences with r
 ---++ Inspecting the output
 Since the output files are now in EDM format, we cannot use a simple text editor to inspect the events. As a simple alternative, CMSSW contains the ParticleListDrawer module:
 
+<pre style="background-color: #f5f5dc;">
+cmsRun record_cfg.py inputFiles=file:/path/to/GEN.root
+</pre>
 
-
-
+What differences do you notice compared to the LHE events you have seen before?
 
 Also for distribution plots, we can not use the same method as above: MA5 does not read EDM files. Instead, we will use simple CMSSW modules to plot basic quantities.
 Copy the configuration input file to our configuration directory and build:
@@ -265,5 +267,7 @@ Now you can run the actual plotting and check out the resulting histograms in a 
 cmsRun WjetsComparisons_cfg.py
 rootbrowse analyzed.root
 </pre>
+
+As in the LHE-level case, look at the distributions and try to make sense of them. What are the differences compared to before?
 
 -- Main.AndreasAlbert - 2018-08-02
