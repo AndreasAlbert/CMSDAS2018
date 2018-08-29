@@ -10,6 +10,11 @@ MadGraph / MadAnalysis commands
 </pre>
 
 
+<pre style="background-color: #e1ceff;">
+File contents or program outputs
+</pre>
+
+
 ---+ Part 1: Using MadGraph to generate parton-level events
 
 In the first part of the exercise, we will use the matrix element generator MadGraph5 _amc@NLO, or in short MG5. MG5 can perform automatic matrix element predictions for many processes at leading and next-to-leading order accuracy in QCD. Because of it's ease of use for processes both in and beyond the standard model, it is one of the most widely used software tools to model the hard interaction.
@@ -51,7 +56,7 @@ wplustest_4f_LO_proc_card.dat
 </pre>
 
 The proc_card file defines process to be generate (hence the name proc). Look at the syntax:
-<pre style="background-color: #f5f5dc;">
+<pre style="background-color: #e1ceff;">
 generate p p &gt; w+, w+ &gt; l+ vl
 </pre>
 
