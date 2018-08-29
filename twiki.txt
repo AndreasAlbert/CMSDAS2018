@@ -331,7 +331,7 @@ cd ${CMSSW_BASE}/src
 scram b;
 cd -
 
-cmsDriver.py CMSDAS/GEN/python/Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_qCut20_LHE_pythia8_cff.py \
+cmsDriver.py CMSDAS/GEN/python/Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_qCut10_LHE_pythia8_cff.py \
 --mc \
 --eventcontent RAWSIM,LHE \
 --datatier GEN-SIM,LHE \
@@ -358,7 +358,11 @@ root -l -b -q /path/to/genproductions/bin/MadGraph5_aMCatNLO/macros/plotdjr.C\(\
 
 Look at the resulting PDF file and check out the distributions. The contributions with different numbers of matrix element partons should sum up to give a smooth distribution.
 
-To save on computing time in this exercise, we have pre-generated samples with different values of QCUT. What do the DJR distributions look like for the different values of QCUT? Which one would you choose?
+To save on computing time in this exercise, we have pre-generated samples with different values of QCUT.
+<pre style="background-color: #f5f5dc;">
+/afs/cern.ch/work/a/aalbert/public/2018-07-30_CMSDAS/wjets_2j/
+</pre>
+ What do the DJR distributions look like for the different values of QCUT? Which one would you choose?
 
 
 -- Main.AndreasAlbert - 2018-08-02
