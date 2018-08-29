@@ -302,7 +302,13 @@ As in the LHE-level case, look at the distributions and try to make sense of the
 
 ---++ Jet multiplicity merging
 
-In the example case we have studied so far, parton radiation was modeled exclusively by P8. MG5 created a matrix element prediction for production of only a W boson on its own, and P8 then took care of adding radiated jets. Another approach is to generate the full matrix elements not only for the W final state, but also for W + 1 jet, W + 2 jet, ..., W + N jet final states. In this case, we will  rely on P8 only to model jet multiplicities > N (and of course model the hadronization of outgoing partons).
+In the example case we have studied so far, parton radiation was modeled exclusively by P8. MG5 created a matrix element prediction for production of only a W boson on its own, and P8 then took care of adding radiated jets. Another approach is to generate the full matrix elements not only for the W final state, but also for W + 1 jet, W + 2 jet, ..., W + N jet final states. In this case, we will rely on P8 only to model jet multiplicities > N (and of course model the hadronization of outgoing partons).
+
+An intrinsic issue with this approach is double counting. Naively speaking, P8 will still "attach" additional radiation to all events coming out of MG, whether they have additional partons or not. Therefore, events that have no additional partons in MG will end up having one or two or many jets after showering by P8. At the same time, we will also get 1-jet events from MG events with one additional parton. To remove this overlap and define more clearly the "division of labour" between the matrix element and parton shower, a merging procedure is used. We will be using the so called MLM merging scheme, which uses a freely-chosen scale QCUT as the boundary between ME and PS. After showering, jet clustering is performed and it is checked whether all  jets with kT > QCUT are matched to a ME-level parton. If not, the event is rejected.
+
+In this exercise, we will see how to set up this method technically and validate the outcome.
+
+
 
 ---+++ Generating events
 We have prepared an MG5 gridpack for a W+jet process, which you can find at this location:
