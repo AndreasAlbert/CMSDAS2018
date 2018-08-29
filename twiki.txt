@@ -50,7 +50,7 @@ The cards we are interested in are located in this subfolder:
 <pre style="background-color: #f5f5dc;">
 ls genproductions/bin/MadGraph5_aMCatNLO/cards/examples/wplustest_4f_LO/
 </pre>
-<pre style="background-color: #f5f5dc;">
+<pre style="background-color: #e1ceff;">
 wplustest_4f_LO_run_card.dat
 wplustest_4f_LO_proc_card.dat
 </pre>
