@@ -82,11 +82,26 @@ You will be asked whether you want to update to a newer version of MG5. Don't.
 
 To get the generation started, we can now paste the contents of the proc_card line by line. What does each line do? Make sure to pay attention to the console output you get in reply to your input.
 
-Tip: If you want to execute a shell command from inside of the MG5 console, preface it with an exclamation mark, e.g."
+Tip: If you want to execute a shell command from inside of the MG5 console, preface it with an exclamation mark, e.g.:
 
 <pre style="background-color: #d8ecff;">
 !cat  ../genproductions/bin/MadGraph5_aMCatNLO/cards/examples/wplustest_4f_LO/wplustest_4f_LO_proc_card.dat
 </pre>
+
+Tip2: To have cleaner process definitions, groups of particles can be defined. Madgraph calls them "multiparticles" and you can print all existing group definitions:
+
+<pre style="background-color: #d8ecff;">
+display multiparticles
+</pre>
+
+The commands in the proc_card will tell MG to prepare for the process generation. The practically most relevant part is that MG figures out all relevant Feynman diagrams contributing to a process. If you are trying to set up a new MC sample, looking at these Feynman diagrams is a great way to check that you actually get the physics you want. Open the HTML output to check them out:
+
+<pre style="background-color: #d8ecff;">
+open index.html
+</pre>
+
+(Note that if you are working in an ssh session, this will only work if you used the '-Y' or '-X' to ssh.)
+
 
 The generation can be started by typing launch. MG5 will ask you a few more questions. When asked about the run_card, one can either use a default run card by just pressing ENTER, edit the default run_card by hand or provide a path to run card of one's choice. Please provide the path to the pre-made run_card:
 
@@ -127,7 +142,7 @@ time ./gridpack_generation.sh wplustest_4f_LO cards/examples/wplustest_4f_LO loc
 
 (Note that there are naming conventions for the card. For a given process name $NAME, the input cards must be named as $NAME_run_card.dat, $NAME_proc_card.dat,etc...)
 
-After the gridpack has been created (this should take approximately 5 minutes), we can extract and run it to produce LHE events:
+After the gridpack has been created (this should take a few minutes), we can extract and run it to produce LHE events:
 
 <pre style="background-color: #f5f5dc;">
 mkdir work
@@ -147,12 +162,21 @@ The output file will be cmsgrid_final.lhe.
 There are multiple ways of analyzing an LHE file, each of which has its own advantages and disadvantages. For the purpose of this exercise, we will use the most straightforward tool: MadAnalysis (MA). MA is a tool designed to be used by theorists to analyze parton-level LHE files, particle-level HEPMC files or even events with DELPHES detector simulation. We can install MA directly from the MG5 console:
 
 <pre style="background-color: #f5f5dc;">
+# Make sure that MA finds our installation of fastjet
+export PATH=${PATH}:/cvmfs/cms.cern.ch/slc6_amd64_gcc481/external/fastjet/3.0.3-cms2/bin/
 cd MG5_aMC_v2_6_0
 ./bin/mg5
 </pre>
 <pre style="background-color: #d8ecff;">
 install MadAnalysis5
 </pre>
+
+Note: If you see an error like: 
+<pre style="background-color: #e1ceff;">
+Command "install MadAnalysis5" interrupted with error:
+IndexError : list index out of range
+</pre>
+Just try again until it works.
 
 After installation finishes, exit the MG5 console and launch MA:
 
@@ -173,9 +197,6 @@ import ../genproductions/bin/MadGraph5_aMCatNLO/work/cmsgrid_final.lhe as GRIDPA
 Now we can user simple syntax to define the distributions we would like to look at:
 
 <pre style="background-color: #d8ecff;">
-# set STANDALONE.xsection = 1
-# set GRIDPACK.xsection = 1
-
 plot PT(mu+) 20 0 100
 plot PT(mu-) 20 0 100
 plot PT(l+) 20 0 100
@@ -192,6 +213,9 @@ and start the analysis:
 set main.stacking_method = superimpose
 submit
 </pre>
+
+As you can see from the terminal output, MadAnalysis translates the plotting commands into a C++ analyzer and compiles it.
+If you want to do some analysis steps that are not supported in the simple command-line syntax we used here, you can also write a C++ analyzer directly (MA calls this "expert mode"). This takes a little more time but gives you much greater flexibility.
 
 The analysis output can be viewed as HTML:
 
@@ -279,16 +303,16 @@ Without opening the output file, can you already discern some differences with r
 Since the output files are now in EDM format, we cannot use a simple text editor to inspect the events. As a simple alternative, CMSSW contains the ParticleListDrawer module:
 
 <pre style="background-color: #f5f5dc;">
-cmsRun record_cfg.py inputFiles=file:/path/to/GEN.root
+cmsRun CMSDAS2018/ex2/input/record_cfg.py inputFiles=file:/path/to/GEN.root
 </pre>
 
-What differences do you notice compared to the LHE events you have seen before?
+What differences do you notice compared to the LHE events you have seen before? Can you find the final state leptons in the list? Tip: There are often multiple copies of each particle. To find out whether a particle is a final-state particle, status codes are used. They are explained in the [[http://home.thep.lu.se/~torbjorn/pythia81html/ParticleProperties.html][P8 documentation]] (look for "statusHepMC").
 
 Also for distribution plots, we can not use the same method as above: MA5 does not read EDM files. Instead, we will use simple CMSSW modules to plot basic quantities.
 Copy the configuration input file to our configuration directory and build:
 
 <pre style="background-color: #f5f5dc;">
-cp WjetsAnalysis_cfi.py ${CONFIG_PATH}
+cp CMSDAS2018/ex2/input/WjetsAnalysis_cfi.py ${CONFIG_PATH}
 cd ${CMSSW_BASE}/src;
 scram b;
 cd -;
@@ -297,7 +321,7 @@ cd -;
 Now you can run the actual plotting and check out the resulting histograms in a ROOT file:
 
 <pre style="background-color: #f5f5dc;">
-cmsRun WjetsComparisons_cfg.py
+cmsRun CMSDAS2018/ex2/input/WjetsComparisons_cfg.py inputFiles=file:/path/to/GEN.root
 rootbrowse analyzed.root
 </pre>
 
@@ -337,7 +361,7 @@ What can you learn from the log file? How many subprocesses are produced? What i
 Let's generate some events. Again, we are going to use cmsDriver, but now with a different fragment. Compare the fragment to the earlier one to see what is different now. Before running it, make sure that it has the correct gridpack path in it.
 
 <pre style="background-color: #f5f5dc;">
-cp Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_qCut20_LHE_pythia8_cff.py ${CONFIG_PATH}
+cp CMSDAS2018/ex2/input/Hadronizer_TuneCP5_13TeV_MLM_5f_max2j_qCut10_LHE_pythia8_cff.py ${CONFIG_PATH}
 cd ${CMSSW_BASE}/src
 scram b;
 cd -
