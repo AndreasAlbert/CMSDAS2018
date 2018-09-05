@@ -168,15 +168,8 @@ cd MG5_aMC_v2_6_0
 ./bin/mg5
 </pre>
 <pre style="background-color: #d8ecff;">
-install MadAnalysis5
+install MadAnalysis5 --source=ucl
 </pre>
-
-Note: If you see an error like: 
-<pre style="background-color: #e1ceff;">
-Command "install MadAnalysis5" interrupted with error:
-IndexError : list index out of range
-</pre>
-Just try again until it works.
 
 After installation finishes, exit the MG5 console and launch MA:
 
