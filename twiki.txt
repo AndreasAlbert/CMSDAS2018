@@ -19,18 +19,6 @@ File contents or program outputs
 
 In the first part of the exercise, we will use the matrix element generator MadGraph5 _amc@NLO, or in short MG5. MG5 can perform automatic matrix element predictions for many processes at leading and next-to-leading order accuracy in QCD. Because of it's ease of use for processes both in and beyond the standard model, it is one of the most widely used software tools to model the hard interaction.
 
----++ Setting up CMSSW
-
-While MG5 can be used completely standalone, we will still set up a CMSSW area just to make sure that everyone has the same libraries loaded and can profit from pre-installed software such as LHAPDF.
-
-<pre style="background-color: #f5f5dc;">
-source /cvmfs/cms.cern.ch/cmsset_default.sh
-scram p CMSSW_7_1_30
-cd CMSSW_7_1_30/src
-cmsenv
-cd -
-</pre>
-
 ---++ Task 1: Using standalone MG5
 
 In this part of the exercise, we will learn how to use MG5 to generate W boson events in proton-proton collisions.
@@ -62,6 +50,19 @@ generate p p &gt; w+, w+ &gt; l+ vl
 
 What does this statement mean? Refer to [[https://cp3.irmp.ucl.ac.be/projects/madgraph/wiki/InputEx][the MG5 documentation]] on the syntax .
 What modifications of this statement can you think of? What could we replace the "w+ &gt; l+ vl" part with?
+
+
+---++ Setting up CMSSW
+
+While MG5 can be used completely standalone, we will still set up a CMSSW area just to make sure that everyone has the same libraries loaded and can profit from pre-installed software such as LHAPDF.
+
+<pre style="background-color: #f5f5dc;">
+source /cvmfs/cms.cern.ch/cmsset_default.sh
+scram p CMSSW_7_1_30
+cd CMSSW_7_1_30/src
+cmsenv
+cd -
+</pre>
 
 ---+++ Setting up Madgraph
 
